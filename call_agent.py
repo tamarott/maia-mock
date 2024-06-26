@@ -43,45 +43,6 @@ def ask_agent(model,history,vicuna_server=None):
             resp = r['choices'][0]['message']['content']
             # costFactor = [0.03, 0.06] if model == 'gpt-4' else [0.002, 0.002]
             # history.append({'role': 'assistant', 'content': resp})
-        elif model in ['gemini']:
-            print("!!")
-            embed()
-            url = 'http://localhost:8080/v1/chat/completions'
-            headers = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer AIzaSyC9OMp51SjV92mfU9Xcx2KpalHls64GvXI'
-            }
-            image_count = 0
-            for iter in history:
-                for item in iter['content']:
-                    if isinstance(item, dict):
-                        if 'image_url' in item.values():
-                            image_count+=1
-                            break
-                    else:
-                        if 'image_url' in item:
-                            image_count+=1
-                            break
-            if image_count==0:                
-                data = {
-                    "model": "gpt-3.5-turbo",
-                    "messages": history,
-                    "temperature": 0
-                }   
-            else:
-                embed()
-                data = {
-                    "model": "gpt-4-vision-preview",
-                    "messages": history,
-                    "temperature": 0
-                } 
-            print("##")  
-            response = requests.post(url, headers=headers, json=data)
-            r = ast.literal_eval(response.text)
-            if 'code' in r:
-                resp = ask_model(model,history,vicuna_server)
-            else: 
-                resp = r['choices'][0]['message']['content']
         else:
             print(f"Unrecognize model name: {model}")
             return 0
